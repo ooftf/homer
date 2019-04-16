@@ -8,12 +8,15 @@ import com.ooftf.homer.lib.aidl.IpcResponseBody;
 import io.reactivex.Single;
 
 public class IpcClient {
-    public static Single<IpcResponseBody> request(String uri, IpcRequestBody body) {
-        Uri parse = Uri.parse(uri);
-        AbsIpcClient absIpcClient = IpcHostManager.getClientMap().get(parse.getHost());
-        if (absIpcClient == null) {
-            return Single.error(new IpcException("未找到 " + parse.getHost() + " 对应的AbsIpcClient", 502));
+    public static Single<IpcResponseBody> request(Uri uri, IpcRequestBody body) {
+        IClient client = IpcHostManager.getClientMap().get(uri.getHost());
+        if (client == null) {
+            return Single.error(new IpcException("未找到 " + uri.getHost() + " 对应的AbsIpcClient", 502));
         }
-        return absIpcClient.call(uri, body);
+        return client.call(uri, body);
+    }
+
+    public static Uri.Builder getBaseUri(String host){
+        return  new Uri.Builder().scheme(IpcConst.IPC_SCHEME).authority(host);
     }
 }

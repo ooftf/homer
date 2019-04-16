@@ -2,6 +2,7 @@ package com.ooftf.homer.lib.main;
 
 import android.app.Service;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.RemoteException;
 
@@ -23,7 +24,7 @@ public class IpcMainService extends Service {
          * @throws RemoteException
          */
         @Override
-        public void request(String uri, IpcRequestBody data, IRemoteServiceCallback callback) {
+        public void request(Uri uri, IpcRequestBody data, IRemoteServiceCallback callback) {
             try {
                 IpcPathManager.handler(uri, data, new RemoteCallback(callback));
             } catch (RemoteException e) {

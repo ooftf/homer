@@ -9,7 +9,8 @@ autoregister {
                     , 'registerMethodName'   : 'register' //
             ],
             [
-                    'scanSuperClasses'     : ['com.ooftf.homer.lib.AbsIpcClient']
+                    'scanInterface'          : 'com.ooftf.homer.lib.IClient',
+                    'scanSuperClasses'       : ['com.ooftf.homer.lib.AbsIpcClient']
                     , 'codeInsertToClassName': 'com.ooftf.homer.lib.IpcHostManager'
                     //未指定codeInsertToMethodName，默认插入到static块中，故此处register必须为static方法
                     , 'registerMethodName'   : 'register' //
@@ -44,4 +45,5 @@ dependencies {
     implementation project(':lib')
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.3'
+    api 'com.alibaba:fastjson:1.2.7'
 }

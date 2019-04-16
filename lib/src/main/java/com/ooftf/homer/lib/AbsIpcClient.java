@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
+import android.net.Uri;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
@@ -38,7 +39,7 @@ import io.reactivex.subjects.PublishSubject;
  * <p>
  * ipc://进程名/方法名?key=value
  */
-public abstract class AbsIpcClient {
+public abstract class AbsIpcClient implements IClient {
     /**
      * 用于延迟订阅
      */
@@ -141,14 +142,14 @@ public abstract class AbsIpcClient {
     /**
      * 请求到主进程，并JSON格式化返回结果
      *
-     * @param name
+     * @param uri
      * @param body
      * @param type
      * @param <T>
      * @return
      */
-    public <T> Single<T> callToBean(final String name, final IpcRequestBody body, final Type type) {
-        return call(name, body).map(new Function<IpcResponseBody, T>() {
+    public <T> Single<T> callToBean(final Uri uri, final IpcRequestBody body, final Type type) {
+        return call(uri, body).map(new Function<IpcResponseBody, T>() {
             @Override
             public T apply(IpcResponseBody body) throws Exception {
                 return Homer.getJsonParser().fromJson(body.getStringBody(), type);
@@ -159,14 +160,14 @@ public abstract class AbsIpcClient {
     /**
      * 请求到主进程，并JSON格式化返回结果
      *
-     * @param name
+     * @param uri
      * @param body
      * @param clazz
      * @param <T>
      * @return
      */
-    public <T> Single<T> callToBean(final String name, final IpcRequestBody body, final Class<T> clazz) {
-        return call(name, body).map(new Function<IpcResponseBody, T>() {
+    public <T> Single<T> callToBean(final Uri uri, final IpcRequestBody body, final Class<T> clazz) {
+        return call(uri, body).map(new Function<IpcResponseBody, T>() {
             @Override
             public T apply(IpcResponseBody s) throws Exception {
                 return Homer.getJsonParser().fromJson(s.getStringBody(), clazz);
@@ -188,16 +189,16 @@ public abstract class AbsIpcClient {
     /**
      * 请求到对应进程
      *
-     * @param name
+     * @param uri
      * @param requestBody
      * @return
      */
-    public Single<IpcResponseBody> call(final String name, final IpcRequestBody requestBody) {
+    public Single<IpcResponseBody> call(final Uri uri, final IpcRequestBody requestBody) {
         if (isSelfProcess) {
             /**
              * 处理请求
              */
-            return localRequest(name, requestBody);
+            return localRequest(uri, requestBody);
         }
         /**
          * 如果当前是未绑定或者正在解绑状态，则开始绑定服务
@@ -208,7 +209,7 @@ public abstract class AbsIpcClient {
         /**
          * 处理请求
          */
-        return remoteRequest(name, requestBody);
+        return remoteRequest(uri, requestBody);
 
     }
 
@@ -219,7 +220,7 @@ public abstract class AbsIpcClient {
      * @param requestBody
      * @return
      */
-    private Single<IpcResponseBody> remoteRequest(final String uri, final IpcRequestBody requestBody) {
+    private Single<IpcResponseBody> remoteRequest(final Uri uri, final IpcRequestBody requestBody) {
         /**
          * 处理请求
          */
@@ -241,12 +242,6 @@ public abstract class AbsIpcClient {
                             }
 
                         });
-                    }
-                })
-                .retryWhen(new Function<Flowable<Throwable>, Publisher<?>>() {
-                    @Override
-                    public Publisher<?> apply(Flowable<Throwable> throwableFlowable) throws Exception {
-                        return null;
                     }
                 })
                 .timeout(60, TimeUnit.SECONDS);
@@ -271,7 +266,7 @@ public abstract class AbsIpcClient {
      * @param requestBody
      * @return
      */
-    private Single<IpcResponseBody> localRequest(final String name, final IpcRequestBody requestBody) {
+    private Single<IpcResponseBody> localRequest(final Uri name, final IpcRequestBody requestBody) {
         return Single
                 .create(new SingleOnSubscribe<IpcResponseBody>() {
                     @Override

@@ -14,11 +14,8 @@ import com.ooftf.homer.lib.annotation.IpcUriPath;
 @Keep
 @IpcUriPath("/FirstHandler")
 public class FirstHandler implements IpcHandler {
-
     @Override
     public void handler(Uri uri, IpcRequestBody data, IpcCallback callback) throws RemoteException {
-        String s = "ipc://main.service/FirstHandler?data=sss";
-        IpcClient.request(s, null).subscribe();
         callback.complete(new IpcResponseBody());
     }
 

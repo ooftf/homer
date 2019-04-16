@@ -26,15 +26,14 @@ public class IpcPathManager {
         handlerMap.put(name, ipcHandler);
     }
 
-    public static void handler(String uri, IpcRequestBody data, IpcCallback callback) throws RemoteException {
-        Uri parse = Uri.parse(uri);
-        IpcHandler ipcHandler = handlerMap.get(parse.getPath());
+    public static void handler(Uri uri, IpcRequestBody data, IpcCallback callback) throws RemoteException {
+        IpcHandler ipcHandler = handlerMap.get(uri.getPath());
         if (ipcHandler != null) {
-            ipcHandler.handler(Uri.parse(uri), data, callback);
+            ipcHandler.handler(uri, data, callback);
         } else {
             IpcResponseBody responseBody = new IpcResponseBody();
             responseBody.setCode(404);
-            responseBody.setMessage(parse.getPath() + " in " + IpcPathManager.class.getSimpleName() + " Unregister");
+            responseBody.setMessage(uri.getPath() + " in " + IpcPathManager.class.getSimpleName() + " Unregister");
             callback.complete(responseBody);
         }
     }

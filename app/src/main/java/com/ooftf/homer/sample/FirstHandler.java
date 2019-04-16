@@ -12,7 +12,7 @@ import com.ooftf.homer.lib.aidl.IpcResponseBody;
 import com.ooftf.homer.lib.annotation.IpcUriPath;
 
 @Keep
-@IpcUriPath("/FirstHandler")
+@IpcUriPath("/first")
 public class FirstHandler implements IpcHandler {
     @Override
     public void handler(Uri uri, IpcRequestBody data, IpcCallback callback) throws RemoteException {

@@ -3,17 +3,19 @@ package com.ooftf.homer.lib;
 import android.os.RemoteException;
 
 import com.ooftf.homer.lib.aidl.IRemoteServiceCallback;
+import com.ooftf.homer.lib.aidl.IpcResponseBody;
 
 public class RemoteCallback implements IpcCallback {
-    IRemoteServiceCallback remoteCallback;
+    private IRemoteServiceCallback remoteCallback;
 
     public RemoteCallback(IRemoteServiceCallback remoteCallback) {
         this.remoteCallback = remoteCallback;
     }
 
-    public void complete(boolean success, String message) throws RemoteException {
+    @Override
+    public void complete(IpcResponseBody message) throws RemoteException {
         if (remoteCallback != null) {
-            remoteCallback.complete(success, message);
+            remoteCallback.complete(message);
         }
     }
 }

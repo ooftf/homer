@@ -1,2 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ooftf.homer.lib" />
+    package="com.ooftf.homer.lib" 
+    >
+    <application>
+        <service android:name=".main.IpcMainService"/>
+    </application>
+</manifest>

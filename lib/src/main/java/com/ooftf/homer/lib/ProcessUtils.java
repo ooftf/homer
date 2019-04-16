@@ -18,9 +18,9 @@ public class ProcessUtils {
     }
 
     /**
-     * Return the name of current process.
+     * Return the value of current process.
      *
-     * @return the name of current process
+     * @return the value of current process
      */
     @Nullable
     public static String getCurrentProcessName() {
@@ -54,7 +54,7 @@ public class ProcessUtils {
 
     /**
      * Maximum length allowed in {@code /proc/self/cmdline}.  Imposed to avoid a large buffer
-     * allocation during the init path.
+     * allocation during the init value.
      */
     private static final int CMDLINE_BUFFER_SIZE = 64;
 
@@ -62,9 +62,9 @@ public class ProcessUtils {
     private static boolean sProcessNameRead;
 
     /**
-     * Get process name by reading {@code /proc/self/cmdline}.
+     * Get process value by reading {@code /proc/self/cmdline}.
      *
-     * @return Process name or null if there was an error reading from {@code /proc/self/cmdline}.
+     * @return Process value or null if there was an error reading from {@code /proc/self/cmdline}.
      * It is unknown how this error can occur in practice and should be considered extremely
      * rare.
      */

@@ -7,5 +7,5 @@ import android.os.RemoteException;
 import com.ooftf.homer.lib.aidl.IpcRequestBody;
 
 public interface IpcHandler {
-    void handler(Uri uri, IpcRequestBody body, IpcCallback callback) throws RemoteException;
+    void handler(IpcRequestBody body, IpcCallback callback) throws RemoteException;
 }

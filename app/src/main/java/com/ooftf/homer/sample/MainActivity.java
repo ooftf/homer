@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IpcClient.request(IpcClient.getBaseUri(IpcConst.MAIN_HOST).path("/first").build(), null).subscribe(new Consumer<IpcResponseBody>() {
+                IpcClient.request(IpcClient.getBaseUri(IpcConst.MAIN_HOST).path("/first").build()).subscribe(new Consumer<IpcResponseBody>() {
                     @Override
                     public void accept(IpcResponseBody ipcResponseBody) throws Exception {
 

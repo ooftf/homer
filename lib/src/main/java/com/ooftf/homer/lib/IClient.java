@@ -8,5 +8,5 @@ import com.ooftf.homer.lib.aidl.IpcResponseBody;
 import io.reactivex.Single;
 
 public interface IClient {
-    Single<IpcResponseBody> call(final Uri uri, final IpcRequestBody requestBody);
+    Single<IpcResponseBody> call(IpcRequestBody requestBody);
 }

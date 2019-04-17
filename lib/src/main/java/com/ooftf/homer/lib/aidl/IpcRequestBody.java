@@ -1,38 +1,30 @@
 package com.ooftf.homer.lib.aidl;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class IpcRequestBody implements Parcelable {
-    String stringBody;
-    byte[] bytesBody;
+    private Uri uri;
+    private String stringBody;
+    private byte[] bytesBody;
 
     public IpcRequestBody() {
     }
 
-    public String getStringBody() {
-        return stringBody;
-    }
-
-    public void setStringBody(String stringBody) {
-        this.stringBody = stringBody;
-    }
-
-    public byte[] getBytesBody() {
-        return bytesBody;
-    }
-
-    public void setBytesBody(byte[] bytesBody) {
-        this.bytesBody = bytesBody;
+    public IpcRequestBody(Uri uri) {
+        this.uri = uri;
     }
 
     protected IpcRequestBody(Parcel in) {
+        uri = in.readParcelable(Uri.class.getClassLoader());
         stringBody = in.readString();
         bytesBody = in.createByteArray();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(uri, flags);
         dest.writeString(stringBody);
         dest.writeByteArray(bytesBody);
     }
@@ -53,4 +45,29 @@ public class IpcRequestBody implements Parcelable {
             return new IpcRequestBody[size];
         }
     };
+
+    public Uri getUri() {
+        return uri;
+    }
+
+    public void setUri(Uri uri) {
+        this.uri = uri;
+    }
+
+    public String getStringBody() {
+        return stringBody;
+    }
+
+    public void setStringBody(String stringBody) {
+        this.stringBody = stringBody;
+    }
+
+    public byte[] getBytesBody() {
+        return bytesBody;
+    }
+
+    public void setBytesBody(byte[] bytesBody) {
+        this.bytesBody = bytesBody;
+    }
+
 }

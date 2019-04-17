@@ -1,11 +1,9 @@
 package com.ooftf.homer.sample;
 
-import android.net.Uri;
 import android.os.RemoteException;
 import android.support.annotation.Keep;
 
 import com.ooftf.homer.lib.IpcCallback;
-import com.ooftf.homer.lib.IpcClient;
 import com.ooftf.homer.lib.IpcHandler;
 import com.ooftf.homer.lib.aidl.IpcRequestBody;
 import com.ooftf.homer.lib.aidl.IpcResponseBody;
@@ -15,8 +13,7 @@ import com.ooftf.homer.lib.annotation.IpcUriPath;
 @IpcUriPath("/first")
 public class FirstHandler implements IpcHandler {
     @Override
-    public void handler(Uri uri, IpcRequestBody data, IpcCallback callback) throws RemoteException {
+    public void handler(IpcRequestBody data, IpcCallback callback) throws RemoteException {
         callback.complete(new IpcResponseBody());
     }
-
 }

@@ -142,14 +142,13 @@ public abstract class AbsIpcClient implements IClient {
     /**
      * 请求到主进程，并JSON格式化返回结果
      *
-     * @param uri
      * @param body
      * @param type
      * @param <T>
      * @return
      */
-    public <T> Single<T> callToBean(final Uri uri, final IpcRequestBody body, final Type type) {
-        return call(uri, body).map(new Function<IpcResponseBody, T>() {
+    public <T> Single<T> callToBean(final IpcRequestBody body, final Type type) {
+        return call(body).map(new Function<IpcResponseBody, T>() {
             @Override
             public T apply(IpcResponseBody body) throws Exception {
                 return Homer.getJsonParser().fromJson(body.getStringBody(), type);
@@ -160,14 +159,13 @@ public abstract class AbsIpcClient implements IClient {
     /**
      * 请求到主进程，并JSON格式化返回结果
      *
-     * @param uri
      * @param body
      * @param clazz
      * @param <T>
      * @return
      */
-    public <T> Single<T> callToBean(final Uri uri, final IpcRequestBody body, final Class<T> clazz) {
-        return call(uri, body).map(new Function<IpcResponseBody, T>() {
+    public <T> Single<T> callToBean(final IpcRequestBody body, final Class<T> clazz) {
+        return call(body).map(new Function<IpcResponseBody, T>() {
             @Override
             public T apply(IpcResponseBody s) throws Exception {
                 return Homer.getJsonParser().fromJson(s.getStringBody(), clazz);
@@ -189,16 +187,15 @@ public abstract class AbsIpcClient implements IClient {
     /**
      * 请求到对应进程
      *
-     * @param uri
      * @param requestBody
      * @return
      */
-    public Single<IpcResponseBody> call(final Uri uri, final IpcRequestBody requestBody) {
+    public Single<IpcResponseBody> call(final IpcRequestBody requestBody) {
         if (isSelfProcess) {
             /**
              * 处理请求
              */
-            return localRequest(uri, requestBody);
+            return localRequest(requestBody);
         }
         /**
          * 如果当前是未绑定或者正在解绑状态，则开始绑定服务
@@ -209,7 +206,7 @@ public abstract class AbsIpcClient implements IClient {
         /**
          * 处理请求
          */
-        return remoteRequest(uri, requestBody);
+        return remoteRequest(requestBody);
 
     }
 
@@ -220,7 +217,7 @@ public abstract class AbsIpcClient implements IClient {
      * @param requestBody
      * @return
      */
-    private Single<IpcResponseBody> remoteRequest(final Uri uri, final IpcRequestBody requestBody) {
+    private Single<IpcResponseBody> remoteRequest(final IpcRequestBody requestBody) {
         /**
          * 处理请求
          */
@@ -228,15 +225,15 @@ public abstract class AbsIpcClient implements IClient {
                 .create(new SingleOnSubscribe<IpcResponseBody>() {
                     @Override
                     public void subscribe(final SingleEmitter<IpcResponseBody> emitter) throws Exception {
-                        HomerLog.log("ipc-remote-request", "value:" + uri + ",data:" + requestBody);
-                        mService.request(uri, requestBody, new IRemoteServiceCallback.Stub() {
+                        HomerLog.log("ipc-remote-request", "value:" + requestBody.getUri() + ",data:" + requestBody);
+                        mService.request(requestBody, new IRemoteServiceCallback.Stub() {
                             @Override
                             public void complete(IpcResponseBody message) throws RemoteException {
                                 if (message.getCode() == 200) {
-                                    HomerLog.log("ipc-remote-response-success", "value:" + uri + ",message:" + message);
+                                    HomerLog.log("ipc-remote-response-success", "value:" + requestBody.getUri() + ",message:" + message);
                                     emitter.onSuccess(message);
                                 } else {
-                                    HomerLog.log("ipc-remote-response-fail", "value:" + uri + ",message:" + message);
+                                    HomerLog.log("ipc-remote-response-fail", "value:" + requestBody.getUri() + ",message:" + message);
                                     emitter.onError(new IpcException(message.getMessage(), message.getCode()));
                                 }
                             }
@@ -262,24 +259,23 @@ public abstract class AbsIpcClient implements IClient {
     /**
      * 没有跨进程
      *
-     * @param name
      * @param requestBody
      * @return
      */
-    private Single<IpcResponseBody> localRequest(final Uri name, final IpcRequestBody requestBody) {
+    private Single<IpcResponseBody> localRequest(final IpcRequestBody requestBody) {
         return Single
                 .create(new SingleOnSubscribe<IpcResponseBody>() {
                     @Override
                     public void subscribe(final SingleEmitter<IpcResponseBody> emitter) throws Exception {
-                        HomerLog.log("ipc-local-request", "value:" + name + ",data:" + requestBody);
-                        IpcPathManager.handler(name, requestBody, new IpcCallback() {
+                        HomerLog.log("ipc-local-request", "value:" + requestBody.getUri() + ",data:" + requestBody);
+                        IpcPathManager.handler(requestBody, new IpcCallback() {
                             @Override
                             public void complete(IpcResponseBody message) throws RemoteException {
                                 if (message.getCode() == 200) {
-                                    HomerLog.log("ipc-local-response-success", "value:" + name + ",message:" + message);
+                                    HomerLog.log("ipc-local-response-success", "value:" + requestBody.getUri() + ",message:" + message);
                                     emitter.onSuccess(message);
                                 } else {
-                                    HomerLog.log("ipc-local-response-fail", "value:" + name + ",message:" + message);
+                                    HomerLog.log("ipc-local-response-fail", "value:" + requestBody.getUri() + ",message:" + message);
                                     emitter.onError(new IpcException(message.getMessage(), message.getCode()));
                                 }
                             }

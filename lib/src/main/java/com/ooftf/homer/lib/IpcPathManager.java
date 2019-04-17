@@ -1,6 +1,5 @@
 package com.ooftf.homer.lib;
 
-import android.net.Uri;
 import android.os.RemoteException;
 import android.text.TextUtils;
 
@@ -26,14 +25,21 @@ public class IpcPathManager {
         handlerMap.put(name, ipcHandler);
     }
 
-    public static void handler(Uri uri, IpcRequestBody data, IpcCallback callback) throws RemoteException {
-        IpcHandler ipcHandler = handlerMap.get(uri.getPath());
+    public static void handler(IpcRequestBody requestBody, IpcCallback callback) throws RemoteException {
+        IpcHandler ipcHandler = handlerMap.get(requestBody.getUri().getPath());
         if (ipcHandler != null) {
-            ipcHandler.handler(uri, data, callback);
+            try {
+                ipcHandler.handler(requestBody, callback);
+            } catch (Exception e) {
+                IpcResponseBody responseBody = new IpcResponseBody();
+                responseBody.setCode(500);
+                responseBody.setMessage(e.toString());
+                callback.complete(responseBody);
+            }
         } else {
             IpcResponseBody responseBody = new IpcResponseBody();
             responseBody.setCode(404);
-            responseBody.setMessage(uri.getPath() + " in " + IpcPathManager.class.getSimpleName() + " Unregister");
+            responseBody.setMessage(requestBody.getUri().getPath() + " in " + IpcPathManager.class.getSimpleName() + " Unregister");
             callback.complete(responseBody);
         }
     }

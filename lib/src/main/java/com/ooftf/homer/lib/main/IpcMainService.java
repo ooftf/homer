@@ -2,7 +2,6 @@ package com.ooftf.homer.lib.main;
 
 import android.app.Service;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.IBinder;
 import android.os.RemoteException;
 
@@ -18,15 +17,14 @@ public class IpcMainService extends Service {
     private final IpcBridge.Stub mBinder = new IpcBridge.Stub() {
         /**
          * 所有进程向主进程发出的请求在这里处理
-         * @param uri
-         * @param data
+         * @param requestBody
          * @param callback
          * @throws RemoteException
          */
         @Override
-        public void request(Uri uri, IpcRequestBody data, IRemoteServiceCallback callback) {
+        public void request(IpcRequestBody requestBody, IRemoteServiceCallback callback) {
             try {
-                IpcPathManager.handler(uri, data, new RemoteCallback(callback));
+                IpcPathManager.handler(requestBody, new RemoteCallback(callback));
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

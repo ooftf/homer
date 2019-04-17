@@ -1,3 +1,4 @@
+[![](https://jitpack.io/v/ooftf/homer.svg)](https://jitpack.io/#ooftf/homer)
 ## 使用方式
 1. 引入AutoRegister库 https://github.com/luckybilly/AutoRegister
 2. autoregister配置

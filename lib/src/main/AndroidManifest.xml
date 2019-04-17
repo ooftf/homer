@@ -3,5 +3,10 @@
     >
     <application>
         <service android:name=".main.IpcMainService"/>
+        <provider
+            android:name=".sp.SPProvider"
+            android:authorities="com.ooftf.homer"
+            android:enabled="true"
+            android:exported="false" />
     </application>
 </manifest>

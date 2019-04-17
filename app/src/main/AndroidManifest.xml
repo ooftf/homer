@@ -11,11 +11,14 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:process=":other" >
+            android:process=":other">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".IpcOtherService"
+            android:process=":other" />
     </application>
 </manifest>

@@ -139,39 +139,6 @@ public abstract class AbsIpcClient implements IClient {
 
     }
 
-    /**
-     * 请求到主进程，并JSON格式化返回结果
-     *
-     * @param body
-     * @param type
-     * @param <T>
-     * @return
-     */
-    public <T> Single<T> callToBean(final IpcRequestBody body, final Type type) {
-        return call(body).map(new Function<IpcResponseBody, T>() {
-            @Override
-            public T apply(IpcResponseBody body) throws Exception {
-                return Homer.getJsonParser().fromJson(body.getStringBody(), type);
-            }
-        });
-    }
-
-    /**
-     * 请求到主进程，并JSON格式化返回结果
-     *
-     * @param body
-     * @param clazz
-     * @param <T>
-     * @return
-     */
-    public <T> Single<T> callToBean(final IpcRequestBody body, final Class<T> clazz) {
-        return call(body).map(new Function<IpcResponseBody, T>() {
-            @Override
-            public T apply(IpcResponseBody s) throws Exception {
-                return Homer.getJsonParser().fromJson(s.getStringBody(), clazz);
-            }
-        });
-    }
 
     @Nullable
     protected String getServiceProcessName() {

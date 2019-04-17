@@ -159,7 +159,7 @@ public class IpcSharedPreferences {
         Homer.getApplication().getContentResolver().update(uri, null, null, null);
     }
 
-    private static void remove(String name, String key) {
+    public static void remove(String name, String key) {
         Uri uri = new Uri.Builder().scheme("content")
                 .authority("com.ooftf.homer")
                 .appendQueryParameter("key", key)
